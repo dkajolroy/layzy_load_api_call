@@ -1,25 +1,76 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import useSWR from "swr";
+import Product from "./Product";
+import { useEffect, useState } from "react";
 
-function App() {
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
+
+export default function App() {
+  const [limit, setLimit] = useState(30);
+  const [store, setStore] = useState([]);
+  const { product, isLoading, isError } = useUser(limit);
+  console.log(isLoading);
+  useEffect(() => {
+    window.addEventListener("scroll", () => {
+      const { scrollHeight, clientHeight, scrollTop } =
+        document.documentElement;
+      if (clientHeight + scrollTop >= scrollHeight - 5) {
+        setLimit((prevNumber) => prevNumber + 10);
+      }
+      // console.log("scrollHeight" + scrollHeight);
+      // console.log("clientHeight" + clientHeight);
+      // console.log("scrollTop" + scrollTop);
+    });
+  }, []);
+  useEffect(() => {
+    if (product && product.products.length > 0) {
+      setStore(product.products);
+    }
+  }, [product]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+      {store.length > 0 ? (
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            flexDirection: "row",
+          }}
         >
-          Learn React
-        </a>
-      </header>
+          {store.map((item, index) => (
+            <Product key={index} product={item} />
+          ))}
+        </div>
+      ) : isLoading ? (
+        <span>First Loading...</span>
+      ) : (
+        isError && <span>Something Error !</span>
+      )}
+
+      {/* Load More Alert */}
+      {store.length > 0 && isLoading ? (
+        <span
+          style={{
+            fontSize: "20px",
+          }}
+        >
+          Load more product...
+        </span>
+      ) : null}
     </div>
   );
 }
 
-export default App;
+function useUser(limit) {
+  const { data, error, isLoading } = useSWR(
+    `https://dummyjson.com/products?limit=${limit}&skip=0&select=title,price,image,thumbnail,`,
+    fetcher
+  );
+
+  return {
+    product: data,
+    isLoading,
+    isError: error,
+  };
+}
