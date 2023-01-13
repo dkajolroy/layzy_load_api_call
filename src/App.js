@@ -9,7 +9,7 @@ export default function App() {
   const [limit, setLimit] = useState(30);
   const [store, setStore] = useState([]);
   const { product, isLoading, isError } = useUser(limit);
-  console.log(isLoading);
+
   useEffect(() => {
     window.addEventListener("scroll", () => {
       const { scrollHeight, clientHeight, scrollTop } =
@@ -17,9 +17,9 @@ export default function App() {
       if (clientHeight + scrollTop >= scrollHeight - 5) {
         setLimit((prevNumber) => prevNumber + 10);
       }
-      // console.log("scrollHeight" + scrollHeight);
-      // console.log("clientHeight" + clientHeight);
-      // console.log("scrollTop" + scrollTop);
+      //  scrollHeight is ful web height
+      //  clientHeight is view web hight
+      //  scrollTop is current scroll height
     });
   }, []);
   useEffect(() => {
