@@ -1,9 +1,9 @@
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-//  scrollHeight is ful web height
-      //  clientHeight is view web hight
-      //  scrollTop is current scroll height
+scrollHeight is ful web height
+clientHeight is view web hight
+scrollTop is current scroll height
 ## Available Scripts
 
 In the project directory, you can run:
